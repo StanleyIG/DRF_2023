@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from authors.views import AuthorModelViewSet, author_get, author_post, book_get, BookModelViewSet, BiographyModelViewSet
 from authapp.views import UserModelViewSet
+from toDoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from django.views.generic import RedirectView
 
 
@@ -27,6 +28,8 @@ router.register('authors', AuthorModelViewSet)
 router.register('user', UserModelViewSet)
 router.register('biographies', BiographyModelViewSet)
 router.register('books', BookModelViewSet)
+router.register('Project', ProjectModelViewSet)
+router.register('ToDo_notes', ToDoModelViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(url="api/")),
