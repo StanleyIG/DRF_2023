@@ -45,8 +45,7 @@ class App extends React.Component {
   render () {
       return (
       <div>
-        <Menu />
-        <Gallery />       
+        <Menu />     
         <AuthorList authors={this.state.authors} />
         <UserList users={this.state.users} />
       </div>
