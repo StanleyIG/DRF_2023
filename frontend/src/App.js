@@ -2,8 +2,6 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Menu from './components/Menu'
-//import Menu2 from './components/Menu2'
-import Gallery from './components/Gallery';
 import AuthorList from './components/Author.js'
 import UserList from './components/Users';
 import axios from 'axios'
@@ -46,7 +44,6 @@ class App extends React.Component {
       return (
       <div>
         <Menu />
-        <Gallery />
         <AuthorList authors={this.state.authors} />
         <UserList users={this.state.users} />
       </div>

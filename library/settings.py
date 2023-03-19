@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'authors',
     'authapp',
+    'toDoapp'
 ]
 
 MIDDLEWARE = [
