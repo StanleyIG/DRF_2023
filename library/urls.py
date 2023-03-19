@@ -15,19 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from authors.views import AuthorModelViewSet
+from rest_framework.routers import DefaultRouter, SimpleRouter
+from authors.views import AuthorModelViewSet, author_get, author_post, book_get, BookModelViewSet, BiographyModelViewSet
 from authapp.views import UserModelViewSet
+from toDoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from django.views.generic import RedirectView
 
 
 router = DefaultRouter()
+#router = SimpleRouter() отличается только тем, что нет разводящей страницы api c api ссылками
 router.register('authors', AuthorModelViewSet)
 router.register('user', UserModelViewSet)
+router.register('biographies', BiographyModelViewSet)
+router.register('books', BookModelViewSet)
+router.register('Project', ProjectModelViewSet)
+router.register('ToDo_notes', ToDoModelViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(url="api/")),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
-
+    path('author_get', author_get),
+    path('book_get', book_get),
+    path('book_get/<int:pk>', book_get),
+    path('author_get/<int:pk>', author_get),
+    path('author_post', author_post),
+    path('author_post/<int:pk>', author_post)
+    
 ]
