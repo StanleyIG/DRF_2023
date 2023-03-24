@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter, SimpleRouter
-from authors.views import AuthorModelViewSet, author_get, author_post, book_get, BookModelViewSet, BiographyModelViewSet
+from authors.views import AuthorModelViewSet, author_get, author_post, book_get, BookModelViewSet, BiographyModelViewSet, BookListAPIView, BookModelLimitedViewSet
+from authors.views import book_api_get, BookApiView
 from authapp.views import UserModelViewSet
 from toDoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from django.views.generic import RedirectView
@@ -28,6 +29,7 @@ router.register('authors', AuthorModelViewSet)
 router.register('user', UserModelViewSet)
 router.register('biographies', BiographyModelViewSet)
 router.register('books', BookModelViewSet)
+#router.register('books', BookModelLimitedViewSet)
 router.register('Project', ProjectModelViewSet)
 router.register('ToDo_notes', ToDoModelViewSet)
 urlpatterns = [
@@ -40,6 +42,8 @@ urlpatterns = [
     path('book_get/<int:pk>', book_get),
     path('author_get/<int:pk>', author_get),
     path('author_post', author_post),
-    path('author_post/<int:pk>', author_post)
+    path('author_post/<int:pk>', author_post),
+    path('book_list_api', BookListAPIView.as_view()),
+    path('book_view_api', BookApiView.as_view())
     
 ]

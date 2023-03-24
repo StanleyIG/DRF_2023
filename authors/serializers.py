@@ -42,7 +42,7 @@ class AuthorModelSerializer(ModelSerializer):
 
 
 class BookModelSerializer(ModelSerializer):
-    authors = AuthorModelSerializer(many=True)
+    #authors = AuthorModelSerializer(many=True)
 
     class Meta:
         model = Book
@@ -50,7 +50,7 @@ class BookModelSerializer(ModelSerializer):
 
 
 class BiographyModelSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer()
+    #author = AuthorSerializer()
 
     class Meta:
         model = Biography
