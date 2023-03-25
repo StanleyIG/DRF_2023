@@ -16,7 +16,7 @@ from rest_framework.pagination import LimitOffsetPagination
 
 
 class AuthorLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 2
+    default_limit = 3
 
 
 class AuthorModelViewSet(ModelViewSet):
@@ -67,7 +67,7 @@ class BookModelLimitedViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
     mixins.UpdateModelMixin,
-    mixins.CreateModelMixin,
+    #mixins.CreateModelMixin,
     GenericViewSet
 ):
     serializer_class = BookModelSerializer

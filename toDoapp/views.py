@@ -4,7 +4,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from toDoapp.models import Project, ToDo
 from toDoapp.serializers import ProjectModelSerializer, ToDoModelSerializer
 from rest_framework.pagination import LimitOffsetPagination
-from django.utils import timezone
+from .filters import ProjectFilter
 
 
 
@@ -21,6 +21,9 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectLimitOffsetPagination
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
+    filterset_fields = ['name', 'users']
+    #filterset_class = ProjectFilter
+
 
     def get_queryset(self):
         name = self.request.query_params.get('name', None)
