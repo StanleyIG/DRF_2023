@@ -7,14 +7,14 @@ from rest_framework import mixins
 from rest_framework.pagination import LimitOffsetPagination
 
 
-#class UserLimitOffsetPagination(LimitOffsetPagination):
-#    default_limit = 2
+class UserLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 3
 
 
 class UserModelViewSet(mixins.ListModelMixin, 
                        mixins.RetrieveModelMixin, 
                        mixins.UpdateModelMixin,
                        GenericViewSet):
-    #pagination_class = UserLimitOffsetPagination
+    pagination_class = UserLimitOffsetPagination
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
