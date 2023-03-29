@@ -42,14 +42,14 @@ class App extends React.Component {
 
   componentDidMount() {
     axios.get('http://127.0.0.1:8000/api/authors/').then(response => {
-      const authors = response.data.results
-      this.setState(
-        {
-          'authors': authors
-        }
-      )
-    })
-    .catch(error => console.log(error))
+        const authors = response.data.results
+        this.setState(
+          {
+            'authors': authors
+          }
+        )
+      })
+      .catch(error => console.log(error))
     axios.get('http://127.0.0.1:8000/api/user/').then(response => {
       const users = response.data.results
       this.setState(
@@ -60,7 +60,7 @@ class App extends React.Component {
     })
     .catch(error => console.log(error))
     axios.get('http://127.0.0.1:8000/api/books/').then(response => {
-      const books = response.data
+      const books = response.data.results
       this.setState(
         {
           'books': books
@@ -98,6 +98,13 @@ class App extends React.Component {
       return (
       <div>
         <BrowserRouter>
+        <div class="container2">
+          <span>
+            <a class="navbar-brand" rel="nofollow" href="https://www.django-rest-framework.org/">
+                    Django REST framework
+                    </a>
+          </span>
+        </div>
         <nav>
         <ul>
           <li> <Link to='/'>Authors</Link> </li>
@@ -107,10 +114,9 @@ class App extends React.Component {
           <li> <Link to='/todos'>ToDos</Link> </li>
         </ul>   
         </nav>
-
           <Routes>
             <Route exact path='/' element={<Navigate to='/authors'/>} />
-            <Route exact path='/books' element={<BookList books={this.state.books} />} />
+            <Route exact path='/books' element={<BookList books={this.state.books} authors={this.state.authors} />} />
             <Route exact path='/users' element={<UserList users={this.state.users} />} />
             <Route exact path='/projects'>
                 <Route index element={<ProjectList projects={this.state.projects} />} />
@@ -119,12 +125,15 @@ class App extends React.Component {
             </Route>
             <Route exact path='/todos' element={<ToDoList todos={this.state.todos} />} />
             <Route exact path='/authors' >
-                <Route index element={<AuthorList authors={this.state.authors} />} />
+                <Route index element={<AuthorList />} />
                 <Route path=':authorID' element={<AuthorBookList books={this.state.books} />} />
             </Route>
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <footer class="footer">
+            © https://t.me/Zmeinih_del_master
+        </footer>
       </div>
       )
     }

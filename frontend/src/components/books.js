@@ -1,20 +1,20 @@
 import React from 'react'
 import App from '../App'
 
-const BookItem = ({book}) => {
+const BookItem = ({book, authors}) => {
     return (
     <tr>
         <td>
             {book.name}
         </td>
         <td>
-            {book.authors}
+            {book.authors.map(authorID => authors.find(a => a.id === authorID).last_name)}
         </td>
     </tr>
 )
 }
 
-const BookList = ({books}) => {
+const BookList = ({books, authors}) => {
     return (
     <table>
         <th>
@@ -24,7 +24,7 @@ const BookList = ({books}) => {
             authors
         </th>
        
-        {books.map((book) => <BookItem book={book} />)}
+        {books.map((book) => <BookItem book={book} authors={authors} />)}
     </table>
     )
 }

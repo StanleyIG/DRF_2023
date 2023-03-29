@@ -21,6 +21,15 @@ from authors.views import book_api_get, BookApiView
 from authapp.views import UserModelViewSet
 from toDoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from django.views.generic import RedirectView
+from rest_framework.authtoken import views
+import requests
+
+
+#response = requests.post('http://127.0.0.1:8000/api-token-auth/', data={'username':
+#'admin', 'password': 'admin'})
+
+#print(response.status_code)
+#print(response.json())
 
 
 router = DefaultRouter()
@@ -36,6 +45,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", RedirectView.as_view(url="api/")),
     path('api-auth/', include('rest_framework.urls')),
+    path('api-token-auth/', views.obtain_auth_token),
     path('api/', include(router.urls)),
     path('author_get', author_get),
     path('book_get', book_get),
