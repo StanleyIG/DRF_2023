@@ -13,10 +13,33 @@ import io
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser, BasePermission, \
+     DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+"""
+Рассмотрим основные виды прав, встроенных в DRF:
+1. AllowAny — доступ есть у всех пользователей, включая неавторизованных.
+2. IsAuthenticated — доступ есть только у авторизованных пользователей.
+3. IsAdminUser — доступ есть только у администратора.
+4. IsAuthenticatedOrReadOnly — доступ есть у авторизованных пользователей, у
+неавторизованных — доступ только на просмотр данных.
+5. DjangoModelPermissions — использует систему прав Django на модели. Для каждой модели у
+пользователя могут быть права add, change, delete, view.
+6. DjangoModelPermissionsOrReadOnly — аналогично DjangoModelPermissions, но с правом на
+просмотр у пользователей, не обладающих другими правами.
+"""
+
+
+class StaffOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
+        #return request.user.username == 'admin' либо так как вариант
 
 
 class AuthorLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 3
+    default_limit = 4
+
+class BookLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 2
 
 
 class AuthorModelViewSet(ModelViewSet):
@@ -24,6 +47,7 @@ class AuthorModelViewSet(ModelViewSet):
     pagination_class = AuthorLimitOffsetPagination
     queryset = Author.objects.all()
     serializer_class = AuthorModelSerializer
+    #permission_classes = [IsAdminUser]
 
     def perform_destroy(self, instance):
         instance.is_deleted = True
@@ -36,11 +60,10 @@ class AuthorModelViewSet(ModelViewSet):
         return Response({'name': str(author)})
     
     def get_queryset(self):
-        first_name = self.request.query_params.get('first_name', None)
-        if first_name:
-            return Author.objects.filter(first_name=first_name)
+        last_name = self.request.query_params.get('last_name', None)
+        if last_name:
+            return Author.objects.filter(last_name__icontains=last_name)
         return Author.objects.all()
-
 
 
 
@@ -72,6 +95,7 @@ class BookModelLimitedViewSet(
 ):
     serializer_class = BookModelSerializer
     queryset = Book.objects.all()
+    pagination_class = BookLimitOffsetPagination
     
 
 class BookListAPIView(ListAPIView):
