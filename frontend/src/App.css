@@ -76,3 +76,26 @@ footer {
   background-position: center;
   min-height: 100vh;
 }
+
+
+
+.login-logout .login {
+  color: white;
+  text-decoration: none;
+}
+
+.login-logout .login:hover {
+  text-decoration: none;
+}
+
+.login-logout .logout {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-family: "Roboto", sans-serif;
+}
+
+.login-logout .logout:hover {
+  text-decoration: none;
+}

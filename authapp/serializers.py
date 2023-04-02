@@ -1,12 +1,8 @@
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer, CharField, Serializer, IntegerField, StringRelatedField
 from authapp.models import User
 
 
-class UserModelSerializer(HyperlinkedModelSerializer):
+class UserModelSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "username",
-            "email",
-            "first_name",
-            "last_name")
+        fields = '__all__'
