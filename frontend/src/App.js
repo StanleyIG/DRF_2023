@@ -9,6 +9,7 @@ import ProjectList from './components/Project';
 import ToDoList from './components/ToDo';
 import AuthorBookList from './components/AuthorBook';
 import ProjectToDos from './components/ProjectToDos';
+import LoginForm from './components/LoginForm.js';
 import axios from 'axios'
 import {HashRouter, BrowserRouter, Route, Link, Navigate, Routes, useLocation} from 'react-router-dom'
 
@@ -34,62 +35,121 @@ class App extends React.Component {
       'books': [],
       'projects': [],
       'todos': [],
-      'searchQuery': '' 
+      'token': '',
     }
   }
 
   
+  obtainAuthToken(login, password) {
+    //console.log('obtainAuthToken', login, password)
+    axios
+            .post('http://127.0.0.1:8000/api-token-auth/', {
+                'username': login,
+                'password': password
+            })
+            .then(response => {
+                const token = response.data.token
+                console.log('token:', token)
+                localStorage.setItem('token', token)
 
-  componentDidMount() {
-    axios.get('http://127.0.0.1:8000/api/authors/').then(response => {
+                this.setState({
+                    'token': token,
+                }, this.getData)
+            })
+            .catch(error => console.log(error))
+  }
+
+
+  isAuth() {
+    return !!this.state.token
+}
+
+
+componentDidMount() {
+  let token = localStorage.getItem('token')
+  this.setState({
+      'token': token
+  }, this.getData)
+}
+
+  getHeaders() {
+    if (this.isAuth()) {
+        return {
+            'Authorization': 'Token ' + this.state.token
+        }
+    }
+//        return { 'Accept': 'application/json; version=2.0' }
+    return { }
+}
+
+  getData() {
+    let headers = this.getHeaders()
+
+    axios.get('http://127.0.0.1:8000/api/authors/', {headers})
+      .then(response => {
         const authors = response.data.results
-        this.setState(
-          {
+        this.setState({
             'authors': authors
-          }
-        )
+          })
       })
-      .catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/user/').then(response => {
+      .catch(error => {
+        console.log(error)
+        this.setState({ 'authors': [] })
+    })
+    axios.get('http://127.0.0.1:8000/api/user/', {headers})
+    .then(response => {
       const users = response.data.results
-      this.setState(
-        {
+      this.setState({
           'users': users
-        }
-      )
+        })
     })
-    .catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/books/').then(response => {
+    .catch(error => {
+      console.log(error)
+      this.setState({ 'users': [] })
+  })
+    axios.get('http://127.0.0.1:8000/api/books/', {headers})
+    .then(response => {
       const books = response.data.results
-      this.setState(
-        {
+      this.setState({
           'books': books
-        }
-      )
+        })
     })
-    .catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/Project/').then(response => {
+    .catch(error => {
+      console.log(error)
+      this.setState({ 'books': [] })
+  })
+    axios.get('http://127.0.0.1:8000/api/Project/', {headers})
+    .then(response => {
       const projects = response.data.results
-      this.setState(
-        {
+      this.setState({
           'projects': projects
-        }
-      )
+        })
     })
-    .catch(error => console.log(error))
-    axios.get('http://127.0.0.1:8000/api/ToDo_notes/').then(response => {
+    .catch(error => {
+      console.log(error)
+      this.setState({ 'projects': [] })
+  })
+    axios.get('http://127.0.0.1:8000/api/ToDo_notes/', {headers})
+    .then(response => {
       const todos = response.data.results
-      this.setState(
-        {
+      this.setState({
           'todos': todos
-        }
-      )
+        })
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.log(error)
+      this.setState({ 'todos': [] })
+  })
   }
-  handleChange = (event) => {
-    this.setState({ searchQuery: event.target.value })
-  }
+
+
+  logOut() {
+    localStorage.setItem('token', '')
+    this.setState({
+        'token': '',
+    }, this.getData)
+}
+
 
 
 //http://localhost:3000/#/books 
@@ -98,12 +158,17 @@ class App extends React.Component {
       return (
       <div>
         <BrowserRouter>
-        <div class="container2">
+        <div className="container2">
           <span>
-            <a class="navbar-brand" rel="nofollow" href="https://www.django-rest-framework.org/">
+            <a className="navbar-brand" rel="nofollow" href="https://www.django-rest-framework.org/">
                     Django REST framework
                     </a>
           </span>
+          <ul className="login-logout">
+            <li>
+              {this.isAuth() ? <submit className="logout" onClick={() => this.logOut()}>Logout</submit> : <Link className="login" to='/login'>Login</Link>}
+            </li>
+          </ul>
         </div>
         <nav>
         <ul>
@@ -117,6 +182,7 @@ class App extends React.Component {
           <Routes>
             <Route exact path='/' element={<Navigate to='/authors'/>} />
             <Route exact path='/books' element={<BookList books={this.state.books} authors={this.state.authors} />} />
+            <Route exact path='/login' element={<LoginForm obtainAuthToken={(login, password) => this.obtainAuthToken(login, password)}/>} />
             <Route exact path='/users' element={<UserList users={this.state.users} />} />
             <Route exact path='/projects'>
                 <Route index element={<ProjectList projects={this.state.projects} />} />
@@ -125,19 +191,20 @@ class App extends React.Component {
             </Route>
             <Route exact path='/todos' element={<ToDoList todos={this.state.todos} />} />
             <Route exact path='/authors' >
-                <Route index element={<AuthorList />} />
+                <Route index element={<AuthorList token={this.state.token}/>} />
                 <Route path=':authorID' element={<AuthorBookList books={this.state.books} />} />
             </Route>
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-        <footer class="footer">
+        <footer className="footer">
             © https://t.me/Zmeinih_del_master
         </footer>
       </div>
       )
     }
   }
+  
     
 export default App;
 

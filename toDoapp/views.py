@@ -21,23 +21,72 @@ class ToDoLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 20
 
 
+class IsReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS 
+
+
 class IsDeveloper(BasePermission):
     def has_permission(self, request, view):
         return request.user.groups.filter(name='developer').exists()
     
-
-class IsProjectOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        if request.user == obj.user:
+            return True
+        return False
+       
+    
+   
+    
+    
+class IsDeveloperReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.groups.filter(name='developer').exists()
+    
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
         if request.user in obj.users.all():
             return True
+        return False
+    
 
 
+
+class IsReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS 
+
+    
+class IsProjectOwner(BasePermission):
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        projects = Project.objects.filter(users=request.user)
+        users = [user for project in projects for user in project.users.all()]
+        #print('Владельцы проектов', users)
+        #print('Авторизованный пользователь', request.user)
+        if request.user in users:
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        if request.user in obj.users.all():
+            return True
+        return False
+         
+      
+    
 class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectLimitOffsetPagination
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
     filterset_fields = ['name', 'users']
-    #permission_classes = [IsProjectOwner]
+    permission_classes = [IsProjectOwner | IsAdminUser | IsDeveloperReadOnly]
 
 
     
@@ -47,12 +96,32 @@ class ProjectModelViewSet(ModelViewSet):
             return Project.objects.filter(name=name)
         return Project.objects.all()
     
+
+class IsProjectOwner2(BasePermission):
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        projects = Project.objects.filter(users=request.user)
+        users = [user for project in projects for user in project.users.all()]
+        #print('Владельцы проектов', users)
+        #print('Авторизованный пользователь', request.user)
+        if request.user in users:
+            return True
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        if request.user == obj.user:
+            return True
+        return False
+    
     
 class ToDoModelViewSet(ModelViewSet):
     pagination_class = ToDoLimitOffsetPagination
     queryset = ToDo.objects.all()
     serializer_class = ToDoModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser | IsDeveloper | DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [IsAdminUser | IsDeveloper | IsProjectOwner2]
 
     def perform_destroy(self, instance):
         instance.is_active = False
