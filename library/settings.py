@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'drf_yasg',
     'corsheaders',
     'authors',
     'authapp',
@@ -68,7 +69,7 @@ ROOT_URLCONF = 'library.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,11 +108,33 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [#'rest_framework.authentication.BasicAuthentication',
                                        'rest_framework.authentication.SessionAuthentication',
                                        'rest_framework.authentication.TokenAuthentication',
-                                       ]
+                                       ],
 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE': 100
+
+    # http://127.0.0.1:8002/api/authors/
+    # http://127.0.0.1:8002/api/2.0/authors/
+    # 'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning'
+
+    # http://127.0.0.1:8002/api/authors/
+    # http://127.0.0.1:8002/api/2.0/authors/
+    # 'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning'
+
+    # http://v1.somesite.com/api/authors/
+    # http://v2.somesite.com/api/authors/
+    # 'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.HostNameVersioning'
+    # http://127.0.0.1:8000/api/authors/?version=2.0
+    # возможно один из самых удобных способов получения нужной версии апи, т.к. этот способ не требует "плодить" пути path
+    # в urls, нужно всего лишь указать гет запрос с таким атрибутом ?version=2.0, соответсвенно название версии менять на ту которая нужна
+    # всё что нужно это готовые переопределённые методы get_serializer_class с нужным сериализатором 
+    #'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
+     # http://somesite.com/api/authors/
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.AcceptHeaderVersioning'
+
 }
+
+# URLPathVersioning, NamespaceVersioning, HostNameVersioning, QueryParameterVersioning, AcceptHeaderVersioning
 
 if DEBUG:
        REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append('rest_framework.renderers.BrowsableAPIRenderer',)
@@ -148,6 +171,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)

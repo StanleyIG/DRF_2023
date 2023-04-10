@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .models import Author, Book, Biography
-from .serializers import AuthorModelSerializer, AuthorSerializer, BookModelSerializer, BiographyModelSerializer, BookSerializer
+from .serializers import AuthorModelSerializer, AuthorSerializer, BookModelSerializer, BiographyModelSerializer, BookSerializer, \
+AuthorModelSerializerV2, BookAuthorStrModelSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.generics import GenericAPIView, ListAPIView, RetrieveAPIView
@@ -49,6 +50,13 @@ class AuthorModelViewSet(ModelViewSet):
     serializer_class = AuthorModelSerializer
     #permission_classes = [IsAdminUser]
 
+    
+    def get_serializer_class(self):
+        if self.request.version == '2.0':
+            return AuthorModelSerializerV2
+        return AuthorModelSerializer
+
+
     def perform_destroy(self, instance):
         instance.is_deleted = True
         instance.save()
@@ -64,12 +72,19 @@ class AuthorModelViewSet(ModelViewSet):
         if last_name:
             return Author.objects.filter(last_name__icontains=last_name)
         return Author.objects.all()
+    
+    
+    def retrieve(self, request, pk=None):
+        author = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(author)
+        return Response(serializer.data)
 
 
 
 class BookModelViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookModelSerializer
+
 
 
 class BiographyModelViewSet(ModelViewSet):
@@ -93,9 +108,14 @@ class BookModelLimitedViewSet(
     #mixins.CreateModelMixin,
     GenericViewSet
 ):
-    serializer_class = BookModelSerializer
+    serializer_class = BookAuthorStrModelSerializer
     queryset = Book.objects.all()
     pagination_class = BookLimitOffsetPagination
+
+    def get_serializer_class(self):
+        if self.request.version == '2.0':
+            return BookAuthorStrModelSerializer
+        return BookModelSerializer
     
 
 class BookListAPIView(ListAPIView):
