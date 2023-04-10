@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -191,3 +192,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 #    'django.contrib.auth.hashers.BCryptPasswordHasher',
 #]
+
+
+GRAPHENE = {
+       "SCHEMA": "library.schema.schema"
+       }

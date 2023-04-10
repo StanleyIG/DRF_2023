@@ -5,7 +5,7 @@ from authapp.models import User
 class UserModelBaseSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = '__all__'#['username', 'first_name', 'last_name', 'email']
 
 
 class UserModelSerializer(ModelSerializer):

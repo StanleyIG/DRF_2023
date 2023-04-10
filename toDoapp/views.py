@@ -43,7 +43,8 @@ class IsDeveloper(BasePermission):
     
 class IsDeveloperReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return request.user.groups.filter(name='developer').exists()
+        if request.method in SAFE_METHODS:
+            return request.user.groups.filter(name='developer').exists()
     
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -51,6 +52,7 @@ class IsDeveloperReadOnly(BasePermission):
         if request.user in obj.users.all():
             return True
         return False
+        
     
 
 

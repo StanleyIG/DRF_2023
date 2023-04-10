@@ -25,6 +25,8 @@ from rest_framework.authtoken import views
 from drf_yasg.views import get_schema_view
 from drf_yasg.openapi import Info, License, Contact
 from django.views.generic import TemplateView
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 
 #response = requests.post('http://127.0.0.1:8000/api-token-auth/', data={'username':
@@ -73,6 +75,8 @@ urlpatterns = [
     path('author_post/<int:pk>', author_post),
     path('book_list_api', BookListAPIView.as_view()),
     path('book_view_api', BookApiView.as_view()),
+    #path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
     #re_path('swagger', schema_view.with_ui()),
     #path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     re_path(r'swagger(?P<format>\.json|\.yaml)', schema_view.without_ui()),
