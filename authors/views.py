@@ -40,7 +40,7 @@ class AuthorLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 4
 
 class BookLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 2
+    default_limit = 30
 
 
 class AuthorModelViewSet(ModelViewSet):
@@ -105,12 +105,13 @@ class BookModelLimitedViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
     mixins.UpdateModelMixin,
-    #mixins.CreateModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet
 ):
     serializer_class = BookAuthorStrModelSerializer
     queryset = Book.objects.all()
-    pagination_class = BookLimitOffsetPagination
+    #pagination_class = BookLimitOffsetPagination
 
     def get_serializer_class(self):
         if self.request.version == '2.0':

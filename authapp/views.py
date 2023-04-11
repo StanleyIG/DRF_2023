@@ -16,7 +16,7 @@ class UserModelViewSet(mixins.ListModelMixin,
                        mixins.UpdateModelMixin,
                        GenericViewSet):
     pagination_class = UserLimitOffsetPagination
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_active=True)
     serializer_class = UserModelBaseSerializer
 
 

@@ -70,7 +70,7 @@ ROOT_URLCONF = 'library.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [BASE_DIR /'frontend' / 'build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -197,3 +197,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GRAPHENE = {
        "SCHEMA": "library.schema.schema"
        }
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR /'frontend' / 'build' / 'static'
+]
