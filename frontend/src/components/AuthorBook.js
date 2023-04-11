@@ -1,21 +1,21 @@
 import React from 'react'
 import { useLocation, useParams } from 'react-router-dom'
+//{book.authors.map(authorID => authors.find(a => a.id === authorID).last_name)}
 
-
-const BookItem = ({book}) => {
+const BookItem = ({book, authors}) => {
     return (
     <tr>
         <td>
             {book.name}
         </td>
         <td>
-            {book.authors}
+            {book.authors.map(authorID => authors.find(a => a.id === authorID).last_name)}
         </td>
     </tr>
 )
 }
 
-const AuthorBookList = ({books}) => {
+const AuthorBookList = ({books, authors}) => {
     //var params = useParams();
     //console.log(params.authorID)
     //var  filtered_books = books.filter((book) => book.authors.includes(parseInt(params.authorID)))
@@ -29,8 +29,7 @@ const AuthorBookList = ({books}) => {
         <th>
             authors
         </th>
-       
-        {filtered_books.map((book) => <BookItem book={book} />)}
+        {filtered_books.map((book) => <BookItem book={book} authors={authors} key={book.id} />)}
     </table>
     )
 }
