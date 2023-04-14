@@ -12,18 +12,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    password = models.CharField(max_length=128)
+    date_joined = models.DateTimeField("date joined", auto_now_add=True)
+    #password = models.CharField(max_length=128)
 
     objects = UserManager()
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
-    def set_password(self, raw_password):
-        self.password = make_password(raw_password)
+    #def set_password(self, raw_password):
+    #    self.password = make_password(raw_password)
 
-    def save(self, *args, **kwargs):
-        self.set_password(self.password)
-        super().save(*args, **kwargs)
+    #def save(self, *args, **kwargs):
+    #    self.set_password(self.password)
+    #    super().save(*args, **kwargs)
 
     
