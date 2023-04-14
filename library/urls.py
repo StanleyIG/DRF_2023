@@ -1,5 +1,4 @@
 """library URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
 Examples:
@@ -75,6 +74,7 @@ urlpatterns = [
     path('author_post/<int:pk>', author_post),
     path('book_list_api', BookListAPIView.as_view()),
     path('book_view_api', BookApiView.as_view()),
+    path('app', TemplateView.as_view(template_name='index.html')),
     #path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path("graphql/", GraphQLView.as_view(graphiql=True)),
     #re_path('swagger', schema_view.with_ui()),

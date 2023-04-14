@@ -87,15 +87,15 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectLimitOffsetPagination
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
-    filterset_fields = ['name', 'users']
+    #filterset_fields = ['name', 'users']
     permission_classes = [IsProjectOwner | IsAdminUser | IsDeveloperReadOnly]
 
 
-    
     def get_queryset(self):
         name = self.request.query_params.get('name', None)
+        print("Search name:", name)
         if name:
-            return Project.objects.filter(name=name)
+            return Project.objects.filter(name__icontains=name)
         return Project.objects.all()
     
 
@@ -121,7 +121,7 @@ class IsProjectOwner2(BasePermission):
     
 class ToDoModelViewSet(ModelViewSet):
     pagination_class = ToDoLimitOffsetPagination
-    queryset = ToDo.objects.all()
+    queryset = ToDo.objects.filter(is_active=True)
     serializer_class = ToDoModelSerializer
     permission_classes = [IsAdminUser | IsDeveloper | IsProjectOwner2]
 
@@ -131,6 +131,7 @@ class ToDoModelViewSet(ModelViewSet):
 
 
     def get_queryset(self):
+        queryset = ToDo.objects.filter(is_active=True)
         project_id = self.request.query_params.get('project_id', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
@@ -140,5 +141,4 @@ class ToDoModelViewSet(ModelViewSet):
         if start_date and end_date:
             return ToDo.objects.filter(created__range=[start_date, end_date])
         
-        return ToDo.objects.all()
-
+        return queryset
