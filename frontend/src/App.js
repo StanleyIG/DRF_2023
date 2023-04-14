@@ -196,7 +196,7 @@ getData() {
   })
     axios.get('http://127.0.0.1:8000/api/Project/', {headers})
     .then(response => {
-      const projects = response.data
+      const projects = response.data.results
       this.setState({
           'projects': projects
         })
