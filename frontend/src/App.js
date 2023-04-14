@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Menu from './components/Menu'
+//import Menu from './components/Menu'
 import AuthorList from './components/Author.js'
 import UserList from './components/Users';
 import BookList from './components/books';
@@ -174,7 +174,7 @@ getData() {
     })
     axios.get('http://127.0.0.1:8000/api/user/', {headers})
     .then(response => {
-      const users = response.data.results
+      const users = response.data
       this.setState({
           'users': users
         })

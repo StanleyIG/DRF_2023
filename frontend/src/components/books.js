@@ -8,7 +8,10 @@ const BookItem = ({book, authors, deleteBook}) => {
             {book.name}
         </td>
         <td>
-           {book.authors.map(authorId => authors.find(a => a.id === authorId).last_name) }
+        {book.authors.map(authorId => {
+    const author = authors.find(a => a.id === authorId);
+    return author ? author.last_name : "";
+})}
         </td>
         <td>
             <button onClick={() => deleteBook(book.id) }>Delete</button>
