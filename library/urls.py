@@ -56,7 +56,7 @@ router.register('Project', ProjectModelViewSet)
 router.register('ToDo_notes', ToDoModelViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", RedirectView.as_view(url="api/")),
+    #path("", RedirectView.as_view(url="api/")),
     path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', views.obtain_auth_token),
     path('api/', include(router.urls)),
