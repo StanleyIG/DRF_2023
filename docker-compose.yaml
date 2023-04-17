@@ -1,0 +1,49 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:13.7
+    privileged: true
+    restart: always
+    ports:
+      - 54328:5432
+    environment:
+      POSTGRES_DB: 'library'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'admin'
+
+  backend:
+    build: .
+    privileged: true
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    command: bash -c "
+        python manage.py migrate && 
+        gunicorn library.wsgi -b 0.0.0.0:8080
+      "
+    environment:
+      DJANGO_SETTINGS_MODULE: library.settingsfolder.production
+
+  nginx:
+    build: ./nginx
+    privileged: true
+    restart: always
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+
+
+  frontend:
+    build: ./frontend
+    privileged: true
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - nginx
+
+
